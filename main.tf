@@ -61,6 +61,13 @@ module "worker" {
   network_bridge    = var.network_bridge
 }
 
+# ── Wait for VMs to fully boot before touching the Talos API ─────────────────
+
+resource "time_sleep" "wait_for_vms" {
+  create_duration = "5m"
+  depends_on      = [module.control_plane, module.worker]
+}
+
 # ── Talos cluster secrets ─────────────────────────────────────────────────────
 
 resource "talos_machine_secrets" "this" {}
@@ -103,8 +110,7 @@ resource "talos_machine_configuration_apply" "control_plane" {
           hostname = "k8s-${local.cp_names[count.index]}"
           interfaces = [{
             interface = var.network_interface
-            addresses = ["${local.control_plane_ips[count.index]}/${var.network_prefix}"]
-            routes    = [{ network = "0.0.0.0/0", gateway = var.network_gateway }]
+            dhcp      = true
             vip       = { ip = var.control_plane_vip }
           }]
           nameservers = [var.dns_server]
@@ -119,7 +125,7 @@ resource "talos_machine_configuration_apply" "control_plane" {
     })
   ]
 
-  depends_on = [module.control_plane, module.worker]
+  depends_on = [time_sleep.wait_for_vms]
 }
 
 # ── Apply configs to workers ──────────────────────────────────────────────────
@@ -140,8 +146,7 @@ resource "talos_machine_configuration_apply" "worker" {
           hostname = "k8s-${local.worker_names[count.index]}"
           interfaces = [{
             interface = var.network_interface
-            addresses = ["${local.worker_ips[count.index]}/${var.network_prefix}"]
-            routes    = [{ network = "0.0.0.0/0", gateway = var.network_gateway }]
+            dhcp      = true
           }]
           nameservers = [var.dns_server]
         }
@@ -149,7 +154,7 @@ resource "talos_machine_configuration_apply" "worker" {
     })
   ]
 
-  depends_on = [module.control_plane, module.worker]
+  depends_on = [time_sleep.wait_for_vms]
 }
 
 # ── Bootstrap etcd on cp-1 ────────────────────────────────────────────────────

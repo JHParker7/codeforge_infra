@@ -32,22 +32,6 @@ variable "network_bridge" {
 
 # ── Networking ────────────────────────────────────────────────────────────────
 
-variable "control_plane_ips" {
-  description = "Static IPv4 addresses for the 3 control-plane nodes"
-  type        = list(string)
-}
-
-variable "worker_ips" {
-  description = "Static IPv4 addresses for the 3 worker nodes"
-  type        = list(string)
-}
-
-variable "network_prefix" {
-  description = "CIDR prefix length for the node subnet"
-  type        = number
-  default     = 24
-}
-
 variable "network_interface" {
   description = "NIC name inside the VM as reported by Talos (virtio is typically eth0)"
   type        = string
