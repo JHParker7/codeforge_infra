@@ -64,7 +64,7 @@ module "worker" {
 # ── Wait for VMs to fully boot before touching the Talos API ─────────────────
 
 resource "time_sleep" "wait_for_vms" {
-  create_duration = "5m"
+  create_duration = "1m"
   depends_on      = [module.control_plane, module.worker]
 }
 
@@ -110,7 +110,8 @@ resource "talos_machine_configuration_apply" "control_plane" {
           hostname = "k8s-${local.cp_names[count.index]}"
           interfaces = [{
             interface = var.network_interface
-            dhcp      = true
+            addresses = ["${local.control_plane_ips[count.index]}/${var.network_prefix}"]
+            routes    = [{ network = "0.0.0.0/0", gateway = var.network_gateway }]
             vip       = { ip = var.control_plane_vip }
           }]
           nameservers = [var.dns_server]

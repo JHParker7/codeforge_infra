@@ -39,8 +39,14 @@ variable "network_interface" {
 }
 
 variable "network_gateway" {
-  description = "Default gateway — used only in the VIP keepalive check"
+  description = "Default gateway for all nodes"
   type        = string
+}
+
+variable "network_prefix" {
+  description = "CIDR prefix length for the node subnet"
+  type        = number
+  default     = 24
 }
 
 variable "dns_server" {
