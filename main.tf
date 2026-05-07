@@ -97,7 +97,8 @@ resource "talos_machine_configuration_apply" "control_plane" {
   config_patches = [
     yamlencode({
       machine = {
-        install = { disk = "/dev/sda" }
+        install  = { disk = "/dev/sda" }
+        certSANs = [local.control_plane_ips[count.index], var.control_plane_vip]
         network = {
           hostname = "k8s-${local.cp_names[count.index]}"
           interfaces = [{
@@ -132,7 +133,8 @@ resource "talos_machine_configuration_apply" "worker" {
   config_patches = [
     yamlencode({
       machine = {
-        install = { disk = "/dev/sda" }
+        install  = { disk = "/dev/sda" }
+        certSANs = [local.worker_ips[count.index]]
         network = {
           hostname = "k8s-${local.worker_names[count.index]}"
           interfaces = [{
