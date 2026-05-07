@@ -1,27 +1,19 @@
+output "kubeconfig" {
+  description = "Kubeconfig for the cluster — pipe to a file or export KUBECONFIG"
+  value       = data.talos_cluster_kubeconfig.this.kubeconfig_raw
+  sensitive   = true
+}
+
+output "talosconfig" {
+  description = "Talos client config — save to ~/.talos/config"
+  value       = talos_machine_secrets.this.client_configuration
+  sensitive   = true
+}
+
 output "control_plane_ips" {
-  description = "IP addresses of the three control-plane nodes"
-  value       = local.control_plane_ips
+  value = local.control_plane_ips
 }
 
 output "worker_ips" {
-  description = "IP addresses of the three worker nodes"
-  value       = local.worker_ips
-}
-
-output "control_plane_vip" {
-  description = "Virtual IP for the Kubernetes API server"
-  value       = var.control_plane_vip
-}
-
-output "kubeconfig_path" {
-  description = "Local path to the generated kubeconfig (server points to VIP)"
-  value       = "${local.tmp_dir}/kubeconfig"
-}
-
-output "vm_ids" {
-  description = "Proxmox VM IDs for all six nodes"
-  value = {
-    control_planes = [for m in module.control_plane : m.vm_id]
-    workers        = [for m in module.worker : m.vm_id]
-  }
+  value = local.worker_ips
 }

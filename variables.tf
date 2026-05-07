@@ -1,49 +1,31 @@
-# ── Proxmox connection ────────────────────────────────────────────────────────
-
-variable "proxmox_endpoint" {
-  description = "Proxmox API URL, e.g. https://192.168.1.10:8006"
-  type        = string
-}
-
-variable "proxmox_insecure" {
-  description = "Skip TLS verification (needed for self-signed certs)"
-  type        = bool
-  default     = true
-}
+# ── Proxmox ───────────────────────────────────────────────────────────────────
 
 variable "proxmox_nodes" {
-  description = "Proxmox node name to deploy VMs on"
-  type        = list
+  description = "Proxmox nodes to spread VMs across (round-robin)"
+  type        = list(string)
   default     = ["pve"]
 }
 
-variable "template_proxmox_node" {
-  description = "Proxmox node name to get template from"
-  type        = string
-  default     = "pve"
-}
-
-# ── Template & storage ────────────────────────────────────────────────────────
-
-variable "template_vm_id" {
-  description = "Proxmox VM ID of the Ubuntu cloud-init template to clone"
-  type        = number
-}
-
 variable "vm_id_base" {
-  description = "Starting Proxmox VM ID; nodes get IDs vm_id_base through vm_id_base+5"
+  description = "Starting VM ID; CPs get base+0..2, workers get base+3..5"
   type        = number
   default     = 200
 }
 
 variable "datastore" {
-  description = "Proxmox datastore for VM disks and cloud-init drives"
+  description = "Proxmox datastore for VM disks"
   type        = string
   default     = "local-lvm"
 }
 
+variable "iso_datastore" {
+  description = "Proxmox datastore for the Talos ISO"
+  type        = string
+  default     = "local"
+}
+
 variable "network_bridge" {
-  description = "Proxmox network bridge to attach VMs to"
+  description = "Proxmox network bridge"
   type        = string
   default     = "vmbr0"
 }
@@ -51,12 +33,12 @@ variable "network_bridge" {
 # ── Networking ────────────────────────────────────────────────────────────────
 
 variable "base_network" {
-  description = "First three octets of the node IP range, e.g. 192.168.1"
+  description = "First three octets of the node subnet, e.g. 192.168.1"
   type        = string
 }
 
 variable "network_prefix" {
-  description = "CIDR prefix length for the node subnet"
+  description = "CIDR prefix length"
   type        = number
   default     = 24
 }
@@ -67,18 +49,18 @@ variable "network_gateway" {
 }
 
 variable "dns_server" {
-  description = "DNS server injected via cloud-init"
+  description = "DNS server for all VMs"
   type        = string
   default     = "8.8.8.8"
 }
 
 variable "control_plane_vip" {
-  description = "Floating virtual IP managed by keepalived — used as the Kubernetes API endpoint"
+  description = "Virtual IP managed by Talos — used as the Kubernetes API endpoint"
   type        = string
 }
 
 variable "cp_ip_start" {
-  description = "Last octet of the first control-plane IP (cp-2 and cp-3 get +1 and +2)"
+  description = "Last octet of the first control-plane IP"
   type        = number
   default     = 11
 }
@@ -89,24 +71,36 @@ variable "worker_ip_start" {
   default     = 21
 }
 
-# ── SSH ───────────────────────────────────────────────────────────────────────
+# ── Talos / Kubernetes ────────────────────────────────────────────────────────
 
-variable "ssh_public_key" {
-  description = "Public SSH key injected into all VMs via cloud-init"
+variable "talos_version" {
+  description = "Talos release to download and deploy"
   type        = string
-  default =  null
+  default     = "1.9.5"
 }
 
-variable "username" {
-  description = "username to use with ssh"
+variable "cluster_name" {
+  description = "Kubernetes cluster name embedded in certificates"
   type        = string
-  default =  null
+  default     = "codeforge"
 }
 
-variable "vm_ssh_private_key_path" {
-  description = "Local path to the SSH private key for connecting to VMs"
+variable "kubernetes_version" {
+  description = "Kubernetes version; must be supported by the chosen Talos release"
   type        = string
-  default     = "~/.ssh/id_rsa"
+  default     = "1.32.3"
+}
+
+variable "pod_cidr" {
+  description = "Pod network CIDR"
+  type        = string
+  default     = "10.244.0.0/16"
+}
+
+variable "service_cidr" {
+  description = "Service network CIDR"
+  type        = string
+  default     = "10.96.0.0/12"
 }
 
 # ── Control plane sizing ──────────────────────────────────────────────────────
@@ -141,30 +135,4 @@ variable "worker_memory_gb" {
 variable "worker_disk_gb" {
   type    = number
   default = 100
-}
-
-# ── Kubernetes ────────────────────────────────────────────────────────────────
-
-variable "kubernetes_version" {
-  description = "Kubernetes minor version to install, e.g. 1.31"
-  type        = string
-  default     = "1.31"
-}
-
-variable "pod_cidr" {
-  description = "Pod network CIDR — must not overlap node or service networks; Calico default is 192.168.0.0/16"
-  type        = string
-  default     = "192.168.0.0/16"
-}
-
-variable "service_cidr" {
-  description = "Service network CIDR"
-  type        = string
-  default     = "10.96.0.0/12"
-}
-
-variable "calico_version" {
-  description = "Calico release to install"
-  type        = string
-  default     = "3.29.0"
 }
