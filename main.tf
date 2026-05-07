@@ -73,6 +73,7 @@ data "talos_machine_configuration" "control_plane" {
   cluster_endpoint   = "https://${var.control_plane_vip}:6443"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.kubernetes_version
+  talos_version      = "v${var.talos_version}"
 }
 
 data "talos_machine_configuration" "worker" {
@@ -81,6 +82,7 @@ data "talos_machine_configuration" "worker" {
   cluster_endpoint   = "https://${var.control_plane_vip}:6443"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.kubernetes_version
+  talos_version      = "v${var.talos_version}"
 }
 
 # ── Apply configs to control planes ──────────────────────────────────────────
