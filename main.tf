@@ -1,11 +1,31 @@
-# ── Talos ISO ─────────────────────────────────────────────────────────────────
+# ── Talos image with qemu-guest-agent extension ───────────────────────────────
+
+resource "talos_image_factory_schematic" "this" {
+  schematic = yamlencode({
+    customization = {
+      systemExtensions = {
+        officialExtensions = ["siderolabs/qemu-guest-agent"]
+      }
+    }
+  })
+}
+
+data "talos_image_factory_urls" "this" {
+  talos_version = "v${var.talos_version}"
+  schematic_id  = talos_image_factory_schematic.this.id
+  platform      = "metal"
+  architecture  = "amd64"
+}
+
+# ── Talos ISO (one copy per Proxmox node) ─────────────────────────────────────
 
 resource "proxmox_virtual_environment_download_file" "talos_iso" {
+  count        = length(var.proxmox_nodes)
   content_type = "iso"
   datastore_id = var.iso_datastore
-  node_name    = var.proxmox_nodes[0]
-  url          = "https://github.com/siderolabs/talos/releases/download/v${var.talos_version}/metal-amd64.iso"
-  file_name    = "talos-${var.talos_version}-metal-amd64.iso"
+  node_name    = var.proxmox_nodes[count.index]
+  url          = data.talos_image_factory_urls.this.urls.iso
+  file_name    = "talos-${var.talos_version}-qemu-guest-agent-metal-amd64.iso"
   overwrite    = false
 }
 
@@ -18,7 +38,7 @@ module "control_plane" {
   name              = "k8s-${local.cp_names[count.index]}"
   vm_id             = var.vm_id_base + count.index
   proxmox_node      = var.proxmox_nodes[count.index % length(var.proxmox_nodes)]
-  talos_iso_file_id = proxmox_virtual_environment_download_file.talos_iso.id
+  talos_iso_file_id = proxmox_virtual_environment_download_file.talos_iso[count.index % length(var.proxmox_nodes)].id
   cores             = var.cp_cores
   memory_gb         = var.cp_memory_gb
   disk_gb           = var.cp_disk_gb
@@ -33,7 +53,7 @@ module "worker" {
   name              = "k8s-${local.worker_names[count.index]}"
   vm_id             = var.vm_id_base + 3 + count.index
   proxmox_node      = var.proxmox_nodes[count.index % length(var.proxmox_nodes)]
-  talos_iso_file_id = proxmox_virtual_environment_download_file.talos_iso.id
+  talos_iso_file_id = proxmox_virtual_environment_download_file.talos_iso[count.index % length(var.proxmox_nodes)].id
   cores             = var.worker_cores
   memory_gb         = var.worker_memory_gb
   disk_gb           = var.worker_disk_gb
@@ -79,9 +99,8 @@ resource "talos_machine_configuration_apply" "control_plane" {
         network = {
           hostname = "k8s-${local.cp_names[count.index]}"
           interfaces = [{
-            interface = "eth0"
-            addresses = ["${local.control_plane_ips[count.index]}/${var.network_prefix}"]
-            routes    = [{ network = "0.0.0.0/0", gateway = var.network_gateway }]
+            interface = var.network_interface
+            dhcp      = true
             vip       = { ip = var.control_plane_vip }
           }]
           nameservers = [var.dns_server]
@@ -115,9 +134,8 @@ resource "talos_machine_configuration_apply" "worker" {
         network = {
           hostname = "k8s-${local.worker_names[count.index]}"
           interfaces = [{
-            interface = "eth0"
-            addresses = ["${local.worker_ips[count.index]}/${var.network_prefix}"]
-            routes    = [{ network = "0.0.0.0/0", gateway = var.network_gateway }]
+            interface = var.network_interface
+            dhcp      = true
           }]
           nameservers = [var.dns_server]
         }

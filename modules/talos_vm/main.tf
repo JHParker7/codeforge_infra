@@ -13,7 +13,6 @@ resource "proxmox_virtual_environment_vm" "this" {
     dedicated = var.memory_gb * 1024
   }
 
-  # Talos installs itself here on first boot
   disk {
     datastore_id = var.datastore
     discard      = "on"
@@ -23,7 +22,6 @@ resource "proxmox_virtual_environment_vm" "this" {
     ssd          = true
   }
 
-  # Boot from ISO until Talos writes the install disk, then disk takes over
   cdrom {
     file_id   = var.talos_iso_file_id
     interface = "ide0"
@@ -36,6 +34,12 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   operating_system {
     type = "l26"
+  }
+
+  # Required to read IPs back from the guest
+  agent {
+    enabled = true
+    trim    = true
   }
 
   boot_order = ["scsi0", "ide0"]

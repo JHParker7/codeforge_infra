@@ -32,24 +32,19 @@ variable "network_bridge" {
 
 # ── Networking ────────────────────────────────────────────────────────────────
 
-variable "base_network" {
-  description = "First three octets of the node subnet, e.g. 192.168.1"
+variable "network_interface" {
+  description = "NIC name inside the VM as reported by Talos (virtio is typically eth0)"
   type        = string
-}
-
-variable "network_prefix" {
-  description = "CIDR prefix length"
-  type        = number
-  default     = 24
+  default     = "eth0"
 }
 
 variable "network_gateway" {
-  description = "Default gateway for all VMs"
+  description = "Default gateway — used only in the VIP keepalive check"
   type        = string
 }
 
 variable "dns_server" {
-  description = "DNS server for all VMs"
+  description = "DNS server pushed into all nodes via machine config"
   type        = string
   default     = "8.8.8.8"
 }
@@ -59,22 +54,16 @@ variable "control_plane_vip" {
   type        = string
 }
 
-variable "cp_ip_start" {
-  description = "Last octet of the first control-plane IP"
+variable "network_prefix" {
+  description = "CIDR prefix length (informational; used in outputs)"
   type        = number
-  default     = 11
-}
-
-variable "worker_ip_start" {
-  description = "Last octet of the first worker IP"
-  type        = number
-  default     = 21
+  default     = 24
 }
 
 # ── Talos / Kubernetes ────────────────────────────────────────────────────────
 
 variable "talos_version" {
-  description = "Talos release to download and deploy"
+  description = "Talos release to deploy"
   type        = string
   default     = "1.9.5"
 }
