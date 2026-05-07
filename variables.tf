@@ -5,34 +5,22 @@ variable "proxmox_endpoint" {
   type        = string
 }
 
-variable "proxmox_api_token" {
-  description = "Proxmox API token — format: user@realm!token_id=secret"
-  type        = string
-  sensitive   = true
-}
-
 variable "proxmox_insecure" {
   description = "Skip TLS verification (needed for self-signed certs)"
   type        = bool
   default     = true
 }
 
-variable "proxmox_node" {
+variable "proxmox_nodes" {
   description = "Proxmox node name to deploy VMs on"
+  type        = list
+  default     = ["pve"]
+}
+
+variable "template_proxmox_node" {
+  description = "Proxmox node name to get template from"
   type        = string
   default     = "pve"
-}
-
-variable "proxmox_ssh_username" {
-  description = "SSH username on the Proxmox host (for cloud-init snippet uploads)"
-  type        = string
-  default     = "root"
-}
-
-variable "proxmox_ssh_private_key_path" {
-  description = "Local path to SSH private key for Proxmox host access"
-  type        = string
-  default     = "~/.ssh/id_rsa"
 }
 
 # ── Template & storage ────────────────────────────────────────────────────────
@@ -106,6 +94,13 @@ variable "worker_ip_start" {
 variable "ssh_public_key" {
   description = "Public SSH key injected into all VMs via cloud-init"
   type        = string
+  default =  null
+}
+
+variable "username" {
+  description = "username to use with ssh"
+  type        = string
+  default =  null
 }
 
 variable "vm_ssh_private_key_path" {
@@ -121,9 +116,9 @@ variable "cp_cores" {
   default = 2
 }
 
-variable "cp_memory_mb" {
+variable "cp_memory_gb" {
   type    = number
-  default = 4096
+  default = 4
 }
 
 variable "cp_disk_gb" {
@@ -135,12 +130,12 @@ variable "cp_disk_gb" {
 
 variable "worker_cores" {
   type    = number
-  default = 4
+  default = 8
 }
 
-variable "worker_memory_mb" {
+variable "worker_memory_gb" {
   type    = number
-  default = 8192
+  default = 8
 }
 
 variable "worker_disk_gb" {

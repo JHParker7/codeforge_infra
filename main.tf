@@ -1,3 +1,4 @@
+
 # ── Cluster secrets ───────────────────────────────────────────────────────────
 # Bootstrap token format required by kubeadm: [a-z0-9]{6}.[a-z0-9]{16}
 resource "random_password" "token_id" {
@@ -39,10 +40,10 @@ module "control_plane" {
 
   name           = "k8s-${local.cp_names[count.index]}"
   vm_id          = var.vm_id_base + count.index
-  proxmox_node   = var.proxmox_node
+  proxmox_node   = var.proxmox_nodes[count.index]
   template_vm_id = var.template_vm_id
   cores          = var.cp_cores
-  memory_mb      = var.cp_memory_mb
+  memory_gb      = var.cp_memory_gb
   disk_gb        = var.cp_disk_gb
   datastore      = var.datastore
   network_bridge = var.network_bridge
@@ -51,18 +52,21 @@ module "control_plane" {
   gateway        = var.network_gateway
   dns_server     = var.dns_server
   ssh_public_key = var.ssh_public_key
+  username = var.username
+  template_proxmox_node = var.template_proxmox_node
 }
 
 module "worker" {
+  depends_on = [ module.control_plane ]
   count  = 3
   source = "./modules/vm"
 
   name           = "k8s-${local.worker_names[count.index]}"
   vm_id          = var.vm_id_base + 3 + count.index
-  proxmox_node   = var.proxmox_node
+  proxmox_node   = var.proxmox_nodes[count.index]
   template_vm_id = var.template_vm_id
   cores          = var.worker_cores
-  memory_mb      = var.worker_memory_mb
+  memory_gb      = var.worker_memory_gb
   disk_gb        = var.worker_disk_gb
   datastore      = var.datastore
   network_bridge = var.network_bridge
@@ -71,6 +75,8 @@ module "worker" {
   gateway        = var.network_gateway
   dns_server     = var.dns_server
   ssh_public_key = var.ssh_public_key
+  username = var.username
+  template_proxmox_node = var.template_proxmox_node
 }
 
 # ── Step 1: Common k8s prerequisites (all 6 nodes, runs in parallel) ──────────
@@ -83,7 +89,7 @@ resource "null_resource" "common_setup" {
   connection {
     type        = "ssh"
     host        = count.index < 3 ? local.control_plane_ips[count.index] : local.worker_ips[count.index - 3]
-    user        = "ubuntu"
+    user        = var.username
     private_key = local.ssh_private_key
     timeout     = "10m"
   }
@@ -111,7 +117,7 @@ resource "null_resource" "haproxy_keepalived" {
   connection {
     type        = "ssh"
     host        = local.control_plane_ips[count.index]
-    user        = "ubuntu"
+    user        = var.username
     private_key = local.ssh_private_key
     timeout     = "5m"
   }
@@ -137,7 +143,7 @@ resource "null_resource" "control_plane_init" {
   connection {
     type        = "ssh"
     host        = local.control_plane_ips[0]
-    user        = "ubuntu"
+    user        = var.username
     private_key = local.ssh_private_key
     timeout     = "20m"
   }
@@ -179,7 +185,7 @@ resource "null_resource" "control_plane_join" {
   connection {
     type        = "ssh"
     host        = local.control_plane_ips[count.index + 1]
-    user        = "ubuntu"
+    user        = var.username
     private_key = local.ssh_private_key
     timeout     = "15m"
   }
@@ -207,7 +213,7 @@ resource "null_resource" "worker_join" {
   connection {
     type        = "ssh"
     host        = local.worker_ips[count.index]
-    user        = "ubuntu"
+    user        = var.username
     private_key = local.ssh_private_key
     timeout     = "15m"
   }

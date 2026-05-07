@@ -5,7 +5,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   clone {
     vm_id     = var.template_vm_id
-    node_name = var.proxmox_node
+    node_name = var.template_proxmox_node
     full      = true
     retries   = 3
   }
@@ -21,7 +21,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   memory {
-    dedicated = var.memory_mb
+    dedicated = var.memory_gb * 1024
   }
 
   disk {
@@ -57,8 +57,8 @@ resource "proxmox_virtual_environment_vm" "this" {
     }
 
     user_account {
-      username = "ubuntu"
-      keys     = [trimspace(var.ssh_public_key)]
+      username = var.username
+      keys     = var.ssh_public_key == "" ? null : [trimspace(var.ssh_public_key)]
     }
   }
 
