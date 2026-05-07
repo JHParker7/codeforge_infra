@@ -40,6 +40,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   agent {
     enabled = true
     trim    = true
+    timeout = "10m"
   }
 
   boot_order = ["scsi0", "ide0"]
