@@ -1,15 +1,18 @@
-# ── Patroni VMs ───────────────────────────────────────────────────────────────
+# ── NixOS / ISO ───────────────────────────────────────────────────────────────
 
-variable "pg_template_vm_id" {
-  description = "Proxmox VM ID of the Ubuntu cloud-init template to clone"
-  type        = number
-}
-
-variable "pg_template_proxmox_node" {
-  description = "Proxmox node where the Ubuntu template lives"
+variable "nixos_version" {
+  description = "NixOS release to install (e.g. 24.11)"
   type        = string
-  default     = "pve"
+  default     = "24.11"
 }
+
+variable "pg_iso_datastore" {
+  description = "Proxmox datastore to cache the NixOS ISO"
+  type        = string
+  default     = "local"
+}
+
+# ── Patroni VMs ───────────────────────────────────────────────────────────────
 
 variable "pg_vm_id_base" {
   description = "Starting VM ID for Patroni nodes; nodes get base+0..2"
@@ -40,13 +43,13 @@ variable "pg_dns_server" {
 }
 
 variable "pg_username" {
-  description = "SSH username injected via cloud-init"
+  description = "SSH username on the installed NixOS system"
   type        = string
-  default     = "ubuntu"
+  default     = "nixos"
 }
 
 variable "pg_ssh_public_key" {
-  description = "SSH public key injected into Patroni VMs via cloud-init"
+  description = "SSH public key injected into Patroni VMs during NixOS installation"
   type        = string
 }
 
@@ -94,11 +97,9 @@ variable "etcd_version" {
 variable "pg_superuser_password" {
   description = "Password for the postgres superuser"
   type        = string
-  sensitive   = true
 }
 
 variable "pg_replication_password" {
   description = "Password for the replicator user created by Patroni bootstrap"
   type        = string
-  sensitive   = true
 }

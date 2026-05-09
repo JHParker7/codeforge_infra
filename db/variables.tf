@@ -30,66 +30,12 @@ variable "network_bridge" {
   default     = "vmbr0"
 }
 
-# ── Networking ────────────────────────────────────────────────────────────────
-
-variable "network_interface" {
-  description = "NIC name inside the VM as reported by Talos (virtio is typically eth0)"
-  type        = string
-  default     = "eth0"
-}
-
-variable "network_gateway" {
-  description = "Default gateway for all nodes"
-  type        = string
-}
-
-variable "network_prefix" {
-  description = "CIDR prefix length for the node subnet"
-  type        = number
-  default     = 24
-}
-
-variable "dns_server" {
-  description = "DNS server pushed into all nodes via machine config"
-  type        = string
-  default     = "8.8.8.8"
-}
-
-variable "control_plane_vip" {
-  description = "Virtual IP managed by Talos — used as the Kubernetes API endpoint"
-  type        = string
-}
-
-# ── Talos / Kubernetes ────────────────────────────────────────────────────────
+# ── Talos ─────────────────────────────────────────────────────────────────────
 
 variable "talos_version" {
   description = "Talos release to deploy"
   type        = string
-  default     = "1.9.5"
-}
-
-variable "cluster_name" {
-  description = "Kubernetes cluster name embedded in certificates"
-  type        = string
-  default     = "codeforge"
-}
-
-variable "kubernetes_version" {
-  description = "Kubernetes version; must be supported by the chosen Talos release"
-  type        = string
-  default     = "1.32.3"
-}
-
-variable "pod_cidr" {
-  description = "Pod network CIDR"
-  type        = string
-  default     = "10.244.0.0/16"
-}
-
-variable "service_cidr" {
-  description = "Service network CIDR"
-  type        = string
-  default     = "10.96.0.0/12"
+  default     = "1.13.0"
 }
 
 # ── Control plane sizing ──────────────────────────────────────────────────────
