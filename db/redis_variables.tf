@@ -1,9 +1,8 @@
-# ── Redis Cluster ─────────────────────────────────────────────────────────────
+# ── Redis ─────────────────────────────────────────────────────────────────────
 
 variable "redis_password" {
-  description = "Password for Redis cluster nodes (requirepass / masterauth)"
+  description = "Password for the standalone Redis instance on pg-1"
   type        = string
-  # sensitive   = true
 }
 
 variable "redis_port" {

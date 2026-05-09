@@ -21,8 +21,6 @@ resource "null_resource" "haproxy_setup" {
       export PG_IP_1="${var.pg_ips[0]}"
       export PG_IP_2="${var.pg_ips[1]}"
       export PG_IP_3="${var.pg_ips[2]}"
-      export REDIS_PORT="${var.redis_port}"
-      export REDIS_PASSWORD="${var.redis_password}"
       export HAPROXY_PG_PRIMARY_PORT="${var.haproxy_pg_primary_port}"
       export HAPROXY_PG_REPLICA_PORT="${var.haproxy_pg_replica_port}"
       export HAPROXY_REDIS_PORT="${var.haproxy_redis_port}"

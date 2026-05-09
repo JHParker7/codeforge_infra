@@ -12,12 +12,6 @@ variable "haproxy_pg_replica_port" {
   default     = 5001
 }
 
-variable "haproxy_redis_port" {
-  description = "HAProxy frontend port for Redis"
-  type        = number
-  default     = 6380
-}
-
 variable "haproxy_stats_port" {
   description = "HAProxy stats page port"
   type        = number
