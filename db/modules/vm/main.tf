@@ -3,6 +3,17 @@ resource "proxmox_virtual_environment_vm" "this" {
   node_name = var.proxmox_node
   vm_id     = var.vm_id
 
+  clone {
+    vm_id     = var.template_vm_id
+    node_name = var.template_proxmox_node
+    full      = true
+    retries   = 3
+  }
+
+  agent {
+    enabled = true
+  }
+
   cpu {
     cores   = var.cores
     sockets = 1
@@ -22,11 +33,6 @@ resource "proxmox_virtual_environment_vm" "this" {
     ssd          = true
   }
 
-  cdrom {
-    file_id   = var.nixos_iso_file_id
-    interface = "ide0"
-  }
-
   network_device {
     bridge = var.network_bridge
     model  = "virtio"
@@ -36,11 +42,27 @@ resource "proxmox_virtual_environment_vm" "this" {
     type = "l26"
   }
 
-  agent {
-    enabled = true
-    trim    = true
-    timeout = "10m"
+  initialization {
+    datastore_id = var.datastore
+
+    dns {
+      servers = [var.dns_server]
+    }
+
+    ip_config {
+      ipv4 {
+        address = "${var.ip_address}/${var.cidr_prefix}"
+        gateway = var.gateway
+      }
+    }
+
+    user_account {
+      username = var.username
+      keys     = var.ssh_public_key == "" ? null : [trimspace(var.ssh_public_key)]
+    }
   }
 
-  boot_order = ["scsi0", "ide0"]
+  lifecycle {
+    ignore_changes = [initialization]
+  }
 }

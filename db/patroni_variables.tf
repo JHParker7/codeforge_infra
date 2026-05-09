@@ -1,15 +1,19 @@
-# ── NixOS / ISO ───────────────────────────────────────────────────────────────
-
-variable "nixos_version" {
-  description = "NixOS release to install (e.g. 24.11)"
+variable "timezone" {
+  description = "Timezone for all db VMs (e.g. Europe/London)"
   type        = string
-  default     = "24.11"
+  default     = "Europe/London"
 }
 
-variable "pg_iso_datastore" {
-  description = "Proxmox datastore to cache the NixOS ISO"
+# ── Ubuntu template ───────────────────────────────────────────────────────────
+
+variable "pg_template_vm_id" {
+  description = "VM ID of the Ubuntu cloud-init template to clone"
+  type        = number
+}
+
+variable "pg_template_proxmox_node" {
+  description = "Proxmox node that hosts the Ubuntu template"
   type        = string
-  default     = "local"
 }
 
 # ── Patroni VMs ───────────────────────────────────────────────────────────────
@@ -43,9 +47,9 @@ variable "pg_dns_server" {
 }
 
 variable "pg_username" {
-  description = "SSH username on the installed NixOS system"
+  description = "SSH username on the Ubuntu cloud-init system"
   type        = string
-  default     = "nixos"
+  default     = "ubuntu"
 }
 
 variable "pg_ssh_public_key" {
