@@ -14,9 +14,15 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  ignoreDifferences:
+    - kind: Secret
+      name: argocd-repo-codeforge
+      namespace: argocd
+      jsonPointers:
+        - /data/sshPrivateKey
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
