@@ -20,12 +20,18 @@ spec:
       namespace: argocd
       jsonPointers:
         - /data/sshPrivateKey
+    - kind: ConfigMap
+      name: argocd-cm
+      namespace: argocd
+      jsonPointers:
+        - /data
   syncPolicy:
     automated:
       prune: false
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
