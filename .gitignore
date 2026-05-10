@@ -10,3 +10,4 @@ secrets.yaml
 talosconfig
 controlplane.yaml
 worker.yaml
+talos/scripts/talos/setup.sh

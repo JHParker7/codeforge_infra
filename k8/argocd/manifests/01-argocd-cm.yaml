@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  url: https://argocd.jhparker.uk
+  # Allow ArgoCD to reach the internal git server
+  repositories: |
+    - url: git@git-server.internal:/usr/local/git/codeforge_infra.git
+      type: git
+      name: codeforge-infra

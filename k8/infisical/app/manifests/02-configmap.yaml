@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: infisical-config
+  namespace: infisical
+data:
+  NODE_ENV: production
+  SITE_URL: https://infisical.jhparker.uk
+  PORT: "8080"
+  # Telemetry off for self-hosted
+  TELEMETRY_ENABLED: "false"
