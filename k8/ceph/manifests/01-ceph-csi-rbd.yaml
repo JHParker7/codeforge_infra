@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ceph-csi-rbd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://ceph.github.io/csi-charts
+    chart: ceph-csi-rbd
+    targetRevision: "*"
+    helm:
+      values: |
+        csiConfig:
+          - clusterID: REPLACE_WITH_CEPH_FSID
+            monitors:
+              - 192.168.50.191:6789
+              - 192.168.50.192:6789
+              - 192.168.50.193:6789
+
+        provisioner:
+          replicaCount: 2
+
+        storageClass:
+          create: true
+          name: ceph-rbd
+          clusterID: REPLACE_WITH_CEPH_FSID
+          pool: kubernetes
+          imageFeatures: layering
+          fstype: ext4
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          mountOptions: []
+          secret:
+            name: csi-rbd-provisioner-secret
+            namespace: ceph-csi
+
+        secret:
+          create: false
+          name: csi-rbd-provisioner-secret
+          namespace: ceph-csi
+
+        nodeplugin:
+          httpMetrics:
+            containerPort: 8081
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ceph-csi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

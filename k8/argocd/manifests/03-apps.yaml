@@ -114,6 +114,29 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: ceph
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    targetRevision: master
+    path: k8/ceph/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ceph-csi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: observability
   namespace: argocd
   finalizers:
