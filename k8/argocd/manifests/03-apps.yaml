@@ -72,16 +72,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: infisical
-  ignoreDifferences:
-    - kind: Secret
-      name: infisical-secrets
-      namespace: infisical
-      jsonPointers:
-        - /data
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - RespectIgnoreDifferences=true
