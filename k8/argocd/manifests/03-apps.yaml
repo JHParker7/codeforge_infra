@@ -33,28 +33,28 @@ spec:
       - CreateNamespace=true
       - RespectIgnoreDifferences=true
 ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: infisical-operator
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   source:
-#     repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
-#     targetRevision: master
-#     path: k8/infisical/operator/manifests
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: infisical-operator-system
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infisical-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    targetRevision: master
+    path: k8/infisical/operator/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: infisical-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
