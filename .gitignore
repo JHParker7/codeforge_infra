@@ -11,3 +11,4 @@ talosconfig
 controlplane.yaml
 worker.yaml
 talos/scripts/talos/setup.sh
+k8/infisical/secrets/
