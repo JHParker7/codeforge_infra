@@ -74,12 +74,19 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: infisical-operator-system
+  ignoreDifferences:
+    - kind: Secret
+      name: machine-identity-credentials
+      namespace: infisical-operator-system
+      jsonPointers:
+        - /data
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
