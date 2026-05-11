@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
     targetRevision: master
     path: k8/argocd/manifests
   destination:
@@ -68,7 +68,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
     targetRevision: master
     path: k8/infisical/operator/manifests
   destination:
@@ -98,7 +98,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
     targetRevision: master
     path: k8/infisical/app/manifests
   destination:
@@ -121,7 +121,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
     targetRevision: master
     path: k8/ceph/manifests
   destination:
@@ -144,7 +144,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@git-server.internal:/usr/local/git/codeforge_infra.git
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
     targetRevision: master
     path: k8/observability/manifests
   destination:
