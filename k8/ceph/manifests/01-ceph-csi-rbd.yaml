@@ -16,9 +16,9 @@ spec:
         csiConfig:
           - clusterID: 1653fc4d-8176-4f79-9b9a-63482e281235
             monitors:
-              - 192.168.50.191:6789
-              - 192.168.50.192:6789
-              - 192.168.50.193:6789
+              - hades.internal:6789
+              - zeus.internal:6789
+              - poseidon.internal:6789
 
         provisioner:
           replicaCount: 2
