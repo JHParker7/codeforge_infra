@@ -14,7 +14,7 @@ spec:
     helm:
       values: |
         csiConfig:
-          - clusterID: REPLACE_WITH_CEPH_FSID
+          - clusterID: 1653fc4d-8176-4f79-9b9a-63482e281235
             monitors:
               - 192.168.50.191:6789
               - 192.168.50.192:6789
@@ -26,8 +26,8 @@ spec:
         storageClass:
           create: true
           name: ceph-rbd
-          clusterID: REPLACE_WITH_CEPH_FSID
-          pool: kubernetes
+          clusterID: 1653fc4d-8176-4f79-9b9a-63482e281235
+          pool: k8
           imageFeatures: layering
           fstype: ext4
           reclaimPolicy: Delete
