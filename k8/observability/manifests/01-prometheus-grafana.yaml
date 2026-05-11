@@ -19,6 +19,7 @@ spec:
             type: Recreate
           persistence:
             enabled: true
+            storageClassName: ceph-rbd
             size: 10Gi
           additionalDataSources:
             - name: Loki
