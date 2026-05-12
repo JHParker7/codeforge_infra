@@ -33,7 +33,7 @@ spec:
               name: blueprints
               key: DATABASE_URL
         - name: GATEKEEPER_URL
-          value: gatekeeper-service.monitoring.svc.cluster.local:8080
+          value: "http://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: "http://localhost:4318"
         - name: TEMPO_ENDPOINT
