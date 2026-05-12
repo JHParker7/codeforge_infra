@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: gatekeeper-service
 spec:
-  type: LoadBalancer
+  # type: LoadBalancer
   selector:
     app: gatekeeper
   ports:
