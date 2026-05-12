@@ -12,3 +12,5 @@ controlplane.yaml
 worker.yaml
 talos/scripts/talos/setup.sh
 k8/infisical/secrets/
+talos/scripts/talos/rpi-worker-patch.yaml
+talos/scripts/talos/worker-pi.yaml
