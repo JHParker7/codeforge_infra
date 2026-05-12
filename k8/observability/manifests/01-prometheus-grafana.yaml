@@ -27,6 +27,7 @@ spec:
               url: http://loki-gateway.monitoring.svc.cluster.local
               access: proxy
             - name: Tempo
+              uid: P214B5B846CF3925F
               type: tempo
               url: http://tempo.monitoring.svc.cluster.local:3200
               access: proxy
