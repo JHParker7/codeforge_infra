@@ -32,3 +32,26 @@ spec:
             secretKeyRef:
               name: gatekeeper
               key: DATABASE_URL
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://localhost:4318"
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:latest
+        args:
+          - "--config=/etc/otel/config.yaml"
+        ports:
+        - containerPort: 4317
+        - containerPort: 4318
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "200m"
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+        volumeMounts:
+        - name: otel-collector-config
+          mountPath: /etc/otel
+      volumes:
+      - name: otel-collector-config
+        configMap:
+          name: otel-collector-config
