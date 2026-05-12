@@ -40,6 +40,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+  ignoreDifferences:
+    - group: ""
+      kind: ConfigMap
+      name: tempo
+      jsonPointers:
+        - /data/overrides.yaml
   syncPolicy:
     automated:
       prune: true
