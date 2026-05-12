@@ -32,6 +32,7 @@ spec:
         persistence:
           enabled: true
           size: 50Gi
+          storageClassName: ceph-rbd
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
