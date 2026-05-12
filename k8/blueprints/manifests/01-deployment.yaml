@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blueprints-deployment
+  labels:
+    app: blueprints
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blueprints
+  template:
+    metadata:
+      labels:
+        app: blueprints
+    spec:
+      containers:
+      - name: blueprints
+        image: ghcr.io/jhparker7/blueprints:latest
+        ports:
+        - containerPort: 8081
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "4"
+          requests:
+            memory: "100Mi"
+            cpu: "2"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: blueprints
+              key: DATABASE_URL
+        - name: GATEKEEPER_URL
+          value: gatekeeper-service.monitoring.svc.cluster.local:8080
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://localhost:4318"
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:latest
+        args:
+          - "--config=/etc/otel/config.yaml"
+        ports:
+        - containerPort: 4317
+        - containerPort: 4318
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "200m"
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+        volumeMounts:
+        - name: otel-collector-config
+          mountPath: /etc/otel
+      volumes:
+      - name: otel-collector-config
+        configMap:
+          name: otel-collector-config

@@ -179,3 +179,26 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: blueprints
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:JHParker7/codeforge_infra.git
+    targetRevision: master
+    path: k8/blueprints/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: blueprints
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
