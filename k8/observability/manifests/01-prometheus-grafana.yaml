@@ -32,6 +32,8 @@ spec:
               access: proxy
               jsonData:
                 grpcEndpoint: tempo.monitoring.svc.cluster.local:4317
+                serviceMap:
+                  datasourceUid: prometheus
         prometheus:
           prometheusSpec:
             enableRemoteWriteReceiver: true
