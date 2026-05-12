@@ -28,10 +28,11 @@ spec:
               access: proxy
             - name: Tempo
               type: tempo
-              url: http://tempo.monitoring.svc.cluster.local:3100
+              url: http://tempo.monitoring.svc.cluster.local:3200
               access: proxy
         prometheus:
           prometheusSpec:
+            enableRemoteWriteReceiver: true
             retention: 30d
             storageSpec:
               volumeClaimTemplate:
