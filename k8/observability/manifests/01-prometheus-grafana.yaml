@@ -30,6 +30,8 @@ spec:
               type: tempo
               url: http://tempo.monitoring.svc.cluster.local:3200
               access: proxy
+              jsonData:
+                grpcEndpoint: tempo.monitoring.svc.cluster.local:4317
         prometheus:
           prometheusSpec:
             enableRemoteWriteReceiver: true
