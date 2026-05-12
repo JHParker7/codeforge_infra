@@ -24,7 +24,7 @@ spec:
           additionalDataSources:
             - name: Loki
               type: loki
-              url: http://loki.monitoring.svc.cluster.local:3100
+              url: http://loki-gateway.monitoring.svc.cluster.local
               access: proxy
             - name: Tempo
               type: tempo

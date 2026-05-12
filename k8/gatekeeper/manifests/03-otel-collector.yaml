@@ -22,11 +22,11 @@ data:
         tls:
           insecure: true
       otlphttp/loki:
-        endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
         tls:
           insecure: true
       prometheusremotewrite:
-        endpoint: http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write
+        endpoint: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
         tls:
           insecure: true
 
