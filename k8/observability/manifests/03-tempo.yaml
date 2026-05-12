@@ -23,13 +23,12 @@ spec:
           metricsGenerator:
             enabled: true
             remoteWriteUrl: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
-          config:
-            overrides:
-              defaults:
-                metrics_generator:
-                  processors:
-                    - service-graphs
-                    - span-metrics
+          overrides:
+            defaults:
+              metrics_generator:
+                processors:
+                  - service-graphs
+                  - span-metrics
         persistence:
           enabled: true
           size: 50Gi
