@@ -29,6 +29,7 @@ spec:
                 processors:
                   - service-graphs
                   - span-metrics
+                  - local-blocks
         persistence:
           enabled: true
           size: 50Gi
