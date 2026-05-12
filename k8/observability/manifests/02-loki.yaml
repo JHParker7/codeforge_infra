@@ -36,6 +36,9 @@ spec:
           enabled: false
         resultsCache:
           enabled: false
+        lokiCanary:
+          extraArgs:
+            - -addr=loki-gateway.monitoring.svc.cluster.local:80
         read:
           replicas: 0
         write:
