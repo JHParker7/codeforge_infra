@@ -25,31 +25,20 @@ spec:
             remoteWriteUrl: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
           config:
             overrides:
-              per_tenant_override_config: /etc/tempo-overrides/overrides.yaml
-          extraVolumeMounts:
-            - name: tempo-overrides
-              mountPath: /etc/tempo-overrides/overrides.yaml
-              subPath: overrides.yaml
-        extraVolumes:
-          - name: tempo-overrides
-            configMap:
-              name: tempo-overrides
+              defaults:
+                metrics_generator:
+                  processors:
+                    - service-graphs
+                    - span-metrics
         persistence:
           enabled: true
           size: 50Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
-  ignoreDifferences:
-    - group: ""
-      kind: ConfigMap
-      name: tempo
-      jsonPointers:
-        - /data/overrides.yaml
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - RespectIgnoreDifferences=true
