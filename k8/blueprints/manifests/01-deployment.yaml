@@ -14,6 +14,8 @@ spec:
       labels:
         app: blueprints
     spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
       - name: blueprints
         image: ghcr.io/jhparker7/blueprints:latest
