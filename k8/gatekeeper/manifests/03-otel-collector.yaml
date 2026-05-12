@@ -21,6 +21,10 @@ data:
         endpoint: tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
+      otlphttp/loki:
+        endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+        tls:
+          insecure: true
 
     service:
       pipelines:
@@ -28,3 +32,7 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlp]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/loki]
