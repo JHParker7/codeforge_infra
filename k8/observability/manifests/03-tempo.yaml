@@ -23,9 +23,12 @@ spec:
           metricsGenerator:
             enabled: true
             remoteWriteUrl: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+          config:
+            overrides:
+              per_tenant_override_config: /etc/tempo-overrides/overrides.yaml
           extraVolumeMounts:
             - name: tempo-overrides
-              mountPath: /conf/overrides.yaml
+              mountPath: /etc/tempo-overrides/overrides.yaml
               subPath: overrides.yaml
         extraVolumes:
           - name: tempo-overrides
