@@ -41,6 +41,7 @@ spec:
         lokiCanary:
           extraArgs:
             - -addr=loki-gateway.monitoring.svc.cluster.local:80
+            - -interval=60s
         read:
           replicas: 0
         write:
