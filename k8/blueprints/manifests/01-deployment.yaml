@@ -36,6 +36,8 @@ spec:
           value: "http://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: "http://localhost:4317"
+        - name: OTEL_EXPORTER_OTLP_PROTOCOL
+          value: "grpc"
         - name: TEMPO_ENDPOINT
           value: "http://tempo.monitoring.svc.cluster.local:3200"
         - name: LOKI_URL
