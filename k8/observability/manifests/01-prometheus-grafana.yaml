@@ -26,12 +26,9 @@ spec:
               protocol: https
               cert_file: /etc/tls/tls.crt
               cert_key: /etc/tls/tls.key
-          extraVolumes:
+          extraSecretMounts:
             - name: tls
-              secret:
-                secretName: grafana-tls
-          extraVolumeMounts:
-            - name: tls
+              secretName: grafana-tls
               mountPath: /etc/tls
               readOnly: true
           additionalDataSources:
