@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: blueprints-integration-tests
+  namespace: blueprints
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: tests
+          image: ghcr.io/jhparker7/blueprints-tests:latest
+          env:
+            - name: API_URL
+              value: "https://blueprints-service.blueprints.svc.cluster.local:8000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blueprints
+                  key: DATABASE_URL
+            - name: CA_CERT_FILE
+              value: "/etc/tls/ca.crt"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: blueprints-tls
