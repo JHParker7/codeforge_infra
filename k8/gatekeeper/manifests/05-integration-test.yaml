@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: gatekeeper-integration-tests
+  namespace: gatekeeper
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -13,7 +14,6 @@ spec:
       restartPolicy: Never
       containers:
         - name: tests
-          # Your custom test image with test dependencies
           image: ghcr.io/jhparker7/gatekeeper-tests:latest
           env:
             - name: API_URL
@@ -33,60 +33,3 @@ spec:
         - name: tls
           secret:
             secretName: gatekeeper-tls
-
-# # Kubernetes Job that runs the Python integration test suite against a live gatekeeper instance.
-# #
-# # Prerequisites before applying:
-# #   - A Secret named "gatekeeper-db" with key "url" containing the PostgreSQL connection string
-# #     (this is the same credential gatekeeper itself uses)
-# #   - The gatekeeper Deployment and its Service named "gatekeeper" must be running
-# #
-# # Example secret:
-# #   kubectl create secret generic gatekeeper-db \
-# #     --from-literal=url='postgres://user:pass@postgres:5432/gatekeeper'
-# apiVersion: batch/v1
-# kind: Job
-# metadata:
-#   name: gatekeeper-integration-tests
-#   labels:
-#     app.kubernetes.io/name: gatekeeper-integration-tests
-#     app.kubernetes.io/component: testing
-# spec:
-#   # Never retry — a failed test run should surface cleanly, not be silently re-run
-#   backoffLimit: 0
-#   # Kill the job if tests haven't finished within 10 minutes
-#   activeDeadlineSeconds: 600
-#   # Auto-delete the completed job after 1 hour so it doesn't clutter the cluster
-#   ttlSecondsAfterFinished: 3600
-#   template:
-#     metadata:
-#       labels:
-#         app.kubernetes.io/name: gatekeeper-integration-tests
-#         app.kubernetes.io/component: testing
-#     spec:
-#       restartPolicy: Never
-#       initContainers:
-#         # Poll until gatekeeper's port is reachable before starting tests
-#         - name: wait-for-gatekeeper
-#           image: public.ecr.aws/docker/library/busybox:1.36
-#           command:
-#             - sh
-#             - -c
-#             - |
-#               until nc -z gatekeeper 8080; do
-#                 echo "waiting for gatekeeper...";
-#                 sleep 5;
-#               done
-#       containers:
-#         - name: integration-tests
-#           image: ghcr.io/jhparker7/gatekeeper-tests:latest
-#           env:
-#             - name: API_URL
-#               value: http://gatekeeper:8080
-#             # Must match the DATABASE_URL used by gatekeeper — tests seed admin data
-#             # directly via SQL and clean up all %@example.com rows after the run
-#             - name: DATABASE_URL
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: gatekeeper-db
-#                   key: url

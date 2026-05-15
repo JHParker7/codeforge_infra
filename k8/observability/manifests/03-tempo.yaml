@@ -30,17 +30,17 @@ spec:
                   - service-graphs
                   - span-metrics
                   - local-blocks
+          server:
+            http_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
+            grpc_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
         persistence:
           enabled: true
           size: 50Gi
           storageClassName: ceph-rbd
-        server:
-          http_tls_config:
-            cert_file: /etc/tls/tls.crt
-            key_file: /etc/tls/tls.key
-          grpc_tls_config:
-            cert_file: /etc/tls/tls.crt
-            key_file: /etc/tls/tls.key
         extraVolumes:
           - name: tls
             secret:
