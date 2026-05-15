@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gatekeeper-integration-tests
+  namespace: gatekeeper
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: tests
+          image: ghcr.io/jhparker7/gatekeeper-tests:latest
+          env:
+            - name: API_URL
+              value: "https://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: gatekeeper
+                  key: DATABASE_URL
+            - name: CA_CERT_FILE
+              value: "/etc/tls/ca.crt"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: gatekeeper-tls

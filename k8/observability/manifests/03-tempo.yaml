@@ -22,7 +22,7 @@ spec:
           retention: 336h  # 14 days
           metricsGenerator:
             enabled: true
-            remoteWriteUrl: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+            remoteWriteUrl: https://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
           overrides:
             defaults:
               metrics_generator:
@@ -30,10 +30,25 @@ spec:
                   - service-graphs
                   - span-metrics
                   - local-blocks
+          server:
+            http_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
+            grpc_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
         persistence:
           enabled: true
           size: 50Gi
           storageClassName: ceph-rbd
+        extraVolumes:
+          - name: tls
+            secret:
+              secretName: tempo-tls
+        extraVolumeMounts:
+          - name: tls
+            mountPath: /etc/tls
+            readOnly: true
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: blueprints-tls
+  namespace: blueprints
+spec:
+  secretName: blueprints-tls
+  dnsNames:
+    - blueprints-service.blueprints.svc.cluster.local
+    - blueprints-service.blueprints.svc
+    - blueprints-service
+  issuerRef:
+    name: codeforge-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

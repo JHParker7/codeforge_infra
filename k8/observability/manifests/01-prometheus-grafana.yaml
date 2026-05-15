@@ -21,16 +21,32 @@ spec:
             enabled: true
             storageClassName: ceph-rbd
             size: 10Gi
+          grafana.ini:
+            server:
+              protocol: https
+              cert_file: /etc/tls/tls.crt
+              cert_key: /etc/tls/tls.key
+          extraVolumes:
+            - name: tls
+              secret:
+                secretName: grafana-tls
+          extraVolumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
           additionalDataSources:
             - name: Loki
               type: loki
-              url: http://loki-gateway.monitoring.svc.cluster.local
-              access: proxy
-            - name: Tempo
-              type: tempo
-              url: http://tempo.monitoring.svc.cluster.local:3200
+              url: https://loki.monitoring.svc.cluster.local:3100
               access: proxy
               jsonData:
+                tlsSkipVerify: true
+            - name: Tempo
+              type: tempo
+              url: https://tempo.monitoring.svc.cluster.local:3200
+              access: proxy
+              jsonData:
+                tlsSkipVerify: true
                 grpcEndpoint: tempo.monitoring.svc.cluster.local:4317
                 serviceMap:
                   datasourceUid: prometheus
@@ -38,6 +54,15 @@ spec:
           prometheusSpec:
             enableRemoteWriteReceiver: true
             retention: 30d
+            web:
+              tlsConfig:
+                cert:
+                  secret:
+                    name: prometheus-tls
+                    key: tls.crt
+                keySecret:
+                  name: prometheus-tls
+                  key: tls.key
             storageSpec:
               volumeClaimTemplate:
                 spec:

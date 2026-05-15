@@ -35,13 +35,21 @@ spec:
                   name: blueprints
                   key: DATABASE_URL
             - name: GATEKEEPER_URL
-              value: "http://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
+              value: "https://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://localhost:4318"
             - name: TEMPO_ENDPOINT
               value: "http://localhost:4318"
             - name: LOKI_URL
               value: "http://loki-gateway.monitoring.svc.cluster.local"
+            - name: TLS_CERT_FILE
+              value: "/etc/tls/tls.crt"
+            - name: TLS_KEY_FILE
+              value: "/etc/tls/tls.key"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
         - name: otel-collector
           image: otel/opentelemetry-collector-contrib:latest
           args:
@@ -59,8 +67,14 @@ spec:
           volumeMounts:
             - name: otel-collector-config
               mountPath: /etc/otel
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
       volumes:
         - name: otel-collector-config
           configMap:
             name: otel-collector-config
+        - name: tls
+          secret:
+            secretName: blueprints-tls
 

@@ -20,15 +20,15 @@ data:
       otlp:
         endpoint: tempo.monitoring.svc.cluster.local:4317
         tls:
-          insecure: true
+          ca_file: /etc/tls/ca.crt
       otlphttp/loki:
-        endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+        endpoint: https://loki.monitoring.svc.cluster.local:3100/otlp
         tls:
-          insecure: true
+          ca_file: /etc/tls/ca.crt
       prometheusremotewrite:
-        endpoint: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+        endpoint: https://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
         tls:
-          insecure: true
+          ca_file: /etc/tls/ca.crt
 
     service:
       pipelines:
