@@ -1,0 +1,63 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: monitoring
+spec:
+  secretName: grafana-tls
+  dnsNames:
+    - kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+    - kube-prometheus-stack-grafana.monitoring.svc
+    - kube-prometheus-stack-grafana
+  issuerRef:
+    name: codeforge-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-tls
+  namespace: monitoring
+spec:
+  secretName: prometheus-tls
+  dnsNames:
+    - kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
+    - kube-prometheus-stack-prometheus.monitoring.svc
+    - kube-prometheus-stack-prometheus
+  issuerRef:
+    name: codeforge-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: loki-tls
+  namespace: monitoring
+spec:
+  secretName: loki-tls
+  dnsNames:
+    - loki.monitoring.svc.cluster.local
+    - loki.monitoring.svc
+    - loki
+  issuerRef:
+    name: codeforge-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tempo-tls
+  namespace: monitoring
+spec:
+  secretName: tempo-tls
+  dnsNames:
+    - tempo.monitoring.svc.cluster.local
+    - tempo.monitoring.svc
+    - tempo
+  issuerRef:
+    name: codeforge-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

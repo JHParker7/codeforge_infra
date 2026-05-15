@@ -29,19 +29,46 @@ spec:
                 index:
                   prefix: index_
                   period: 24h
+          server:
+            http_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
+            grpc_tls_config:
+              cert_file: /etc/tls/tls.crt
+              key_file: /etc/tls/tls.key
         singleBinary:
           replicas: 1
           persistence:
             size: 50Gi
             storageClass: ceph-rbd
+          extraVolumes:
+            - name: tls
+              secret:
+                secretName: loki-tls
+          extraVolumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
+        gateway:
+          enabled: false
         chunksCache:
           enabled: false
         resultsCache:
           enabled: false
         lokiCanary:
           extraArgs:
-            - -addr=loki-gateway.monitoring.svc.cluster.local:80
+            - -addr=loki.monitoring.svc.cluster.local:3100
             - -interval=60s
+            - -scheme=https
+            - -tls-ca-cert-path=/etc/tls/ca.crt
+          extraVolumes:
+            - name: tls
+              secret:
+                secretName: loki-tls
+          extraVolumeMounts:
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
         read:
           replicas: 0
         write:

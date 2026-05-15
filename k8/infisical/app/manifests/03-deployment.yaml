@@ -42,3 +42,28 @@ spec:
             limits:
               cpu: 1000m
               memory: 1Gi
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: tls
+              mountPath: /etc/tls
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: infisical-nginx-config
+        - name: tls
+          secret:
+            secretName: infisical-tls
