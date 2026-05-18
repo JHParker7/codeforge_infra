@@ -11,6 +11,8 @@ spec:
   ttlSecondsAfterFinished: 600
   template:
     spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       restartPolicy: Never
       containers:
         - name: tests
