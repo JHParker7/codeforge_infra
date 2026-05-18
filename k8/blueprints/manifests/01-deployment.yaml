@@ -19,6 +19,19 @@ spec:
       containers:
         - name: blueprints
           image: ghcr.io/jhparker7/blueprints:1.1.3
+          command:
+            - uvicorn
+            - main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+            - --ssl-keyfile
+            - /etc/tls/tls.key
+            - --ssl-certfile
+            - /etc/tls/tls.crt
+            - --ssl-ca-certs
+            - /etc/tls/ca.crt
           ports:
             - containerPort: 8000
           resources:
@@ -46,6 +59,10 @@ spec:
               value: "/etc/tls/tls.crt"
             - name: TLS_KEY_FILE
               value: "/etc/tls/tls.key"
+            - name: CA_CERT_FILE
+              value: "/etc/tls/ca.crt"
+            - name: REQUESTS_CA_BUNDLE
+              value: "/etc/tls/ca.crt"
           volumeMounts:
             - name: tls
               mountPath: /etc/tls
