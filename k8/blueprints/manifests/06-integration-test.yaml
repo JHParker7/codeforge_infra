@@ -27,6 +27,8 @@ spec:
                   key: DATABASE_URL
             - name: CA_CERT_FILE
               value: "/etc/tls/ca.crt"
+            - name: REQUESTS_CA_BUNDLE
+              value: "/etc/tls/ca.crt"
           volumeMounts:
             - name: tls
               mountPath: /etc/tls
