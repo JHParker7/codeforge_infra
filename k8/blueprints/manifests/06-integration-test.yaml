@@ -16,8 +16,10 @@ spec:
         - name: tests
           image: ghcr.io/jhparker7/blueprints-tests:latest
           env:
-            - name: API_URL
+            - name: BLUEPRINTS_URL
               value: "https://blueprints-service.blueprints.svc.cluster.local:8000"
+            - name: GATEKEEPER_URL
+              value: "https://gatekeeper-service.gatekeeper.svc.cluster.local:8080"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
