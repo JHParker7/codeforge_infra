@@ -21,7 +21,7 @@ spec:
           image: ghcr.io/jhparker7/blueprints:1.1.3
           command:
             - uvicorn
-            - appp:app
+            - app:app
             - --host
             - "0.0.0.0"
             - --port
